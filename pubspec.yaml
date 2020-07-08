@@ -26,6 +26,10 @@ dependencies:
   shared_preferences: ^0.5.7+3
   provider:
   flare_flutter:
+  flutter_fluid_slider: ^1.0.2
+  websafe_svg:
+  bot_toast:  ^3.0.0
+  volume: ^0.1.4
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +50,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/flareassets/
+    - assets/svgassets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
