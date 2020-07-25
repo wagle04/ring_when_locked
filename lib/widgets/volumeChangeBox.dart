@@ -3,9 +3,6 @@ import 'package:flutter_fluid_slider/flutter_fluid_slider.dart';
 import 'package:volume/volume.dart';
 
 class VolumeChangeBox extends StatefulWidget {
-  final bool music;
-
-  const VolumeChangeBox({this.music});
   @override
   _VolumeChangeBoxState createState() => _VolumeChangeBoxState();
 }
@@ -15,13 +12,9 @@ class _VolumeChangeBoxState extends State<VolumeChangeBox> {
   int currentVolume = 0;
 
   setCurrentVolume() async {
-    if (widget.music) {
-      currentVolume = await getCurrentVolume(AudioManager.STREAM_MUSIC);
-      print("music volume " + currentVolume.toString());
-    } else {
-      currentVolume = await getCurrentVolume(AudioManager.STREAM_RING);
-      print("ringtone volume " + currentVolume.toString());
-    }
+    var list = await getVolume(AudioManager.STREAM_RING);
+    currentVolume = list[0];
+    maxVolume = list[1];
   }
 
   @override
@@ -38,9 +31,9 @@ class _VolumeChangeBoxState extends State<VolumeChangeBox> {
     return RotatedBox(
       quarterTurns: 3,
       child: FluidSlider(
-        value: currentVolume.toDouble(),
+        value: (100 * currentVolume / maxVolume).toDouble(),
         min: 0.0,
-        max: maxVolume.toDouble(),
+        max: 100.0,
         start: Container(),
         end: Container(),
         thumbColor: Colors.red,
@@ -49,15 +42,11 @@ class _VolumeChangeBoxState extends State<VolumeChangeBox> {
             : Colors.black,
         onChanged: (x) {
           setState(() {
-            currentVolume = x.toInt();
+            currentVolume = maxVolume * x ~/ 100;
           });
         },
         onChangeEnd: (x) {
-          if (widget.music) {
-            setVolume(x.toInt(), AudioManager.STREAM_MUSIC);
-          } else {
-            setVolume(x.toInt(), AudioManager.STREAM_RING);
-          }
+          setVolume(x.toInt(), AudioManager.STREAM_RING);
         },
       ),
     );
@@ -68,13 +57,13 @@ setVolume(int userSetVolume, AudioManager audioManager) async {
   await Volume.controlVolume(audioManager);
   int maxVolume = await Volume.getMaxVol;
   double redefinedVolume = userSetVolume * maxVolume / 100;
-  print(redefinedVolume);
-  Volume.setVol(redefinedVolume.toInt(), showVolumeUI: ShowVolumeUI.HIDE);
+  print(audioManager.toString() + " new volume: " + redefinedVolume.toString());
+  await Volume.setVol(redefinedVolume.toInt(), showVolumeUI: ShowVolumeUI.HIDE);
 }
 
-Future<int> getCurrentVolume(AudioManager audioManager) async {
+Future<List<int>> getVolume(AudioManager audioManager) async {
   await Volume.controlVolume(audioManager);
   var x = await Volume.getVol;
-  print(audioManager.toString() + ": " + x.toString());
-  return Volume.getVol;
+  var y = await Volume.getMaxVol;
+  return [x, y];
 }

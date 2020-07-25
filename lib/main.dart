@@ -61,19 +61,7 @@ class MainPage extends StatelessWidget {
                 SizedBox(width: 20),
                 Column(
                   children: <Widget>[
-                    VolumeChangeBox(music: true),
-                    SizedBox(height: 20),
-                    WebsafeSvg.asset(
-                      "assets/svgassets/music.svg",
-                      height: 20,
-                      width: 20,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    VolumeChangeBox(music: false),
+                    VolumeChangeBox(),
                     SizedBox(height: 20),
                     WebsafeSvg.asset(
                       "assets/svgassets/ringtone.svg",
@@ -83,6 +71,18 @@ class MainPage extends StatelessWidget {
                     ),
                   ],
                 ),
+//                Column(
+//                  children: <Widget>[
+//                    RingVolumeChangeBox(),
+//                    SizedBox(height: 20),
+//                    WebsafeSvg.asset(
+//                      "assets/svgassets/ringtone.svg",
+//                      height: 20,
+//                      width: 20,
+//                      color: Theme.of(context).iconTheme.color,
+//                    ),
+//                  ],
+//                ),
                 SizedBox(width: 20),
               ],
             ),
