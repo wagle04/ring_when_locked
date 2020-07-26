@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fluid_slider/flutter_fluid_slider.dart';
+import 'package:provider/provider.dart';
+import 'package:ringwhenlocked/selectedProvider/lockedUnlockedSelector.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volume/volume.dart';
 
 class VolumeChangeBox extends StatefulWidget {
@@ -10,11 +13,14 @@ class VolumeChangeBox extends StatefulWidget {
 class _VolumeChangeBoxState extends State<VolumeChangeBox> {
   int maxVolume = 100;
   int currentVolume = 0;
+  SharedPreferences prefs;
 
   setCurrentVolume() async {
     var list = await getVolume(AudioManager.STREAM_RING);
     currentVolume = list[0];
     maxVolume = list[1];
+    prefs = await SharedPreferences.getInstance();
+    setState(() {});
   }
 
   @override
@@ -27,6 +33,9 @@ class _VolumeChangeBoxState extends State<VolumeChangeBox> {
   Widget build(BuildContext context) {
 //    var width = MediaQuery.of(context).size.width;
 //    var height = MediaQuery.of(context).size.height;
+
+    var state = Provider.of<StateSelector>(context);
+    bool lockSelected = state.getSelectedState;
 
     return RotatedBox(
       quarterTurns: 3,
@@ -45,8 +54,11 @@ class _VolumeChangeBoxState extends State<VolumeChangeBox> {
             currentVolume = maxVolume * x ~/ 100;
           });
         },
-        onChangeEnd: (x) {
-          setVolume(x.toInt(), AudioManager.STREAM_RING);
+        onChangeEnd: (x) async {
+          String y = "";
+          y = lockSelected ? "volumeWhenLocked" : "volumeWhenUnlocked";
+          await prefs.setInt(y, x.toInt());
+//          setVolume(x.toInt(), AudioManager.STREAM_RING);
         },
       ),
     );
