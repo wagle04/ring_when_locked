@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ringwhenlocked/selectedProvider/lockedUnlockedSelector.dart';
+import 'package:ringwhenlocked/selectedProvider/volumeData.dart';
 import 'package:ringwhenlocked/themes/themes.dart';
 import 'package:ringwhenlocked/widgets/LockedBox.dart';
 import 'package:ringwhenlocked/widgets/UnlockedBox.dart';
@@ -12,12 +13,13 @@ import 'package:websafe_svg/websafe_svg.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeSwitcher(),
-      child: ChangeNotifierProvider(
-        create: (context) => StateSelector(),
-        child: MyApp(),
-      ),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeSwitcher()),
+        ChangeNotifierProvider(create: (context) => StateSelector()),
+        ChangeNotifierProvider(create: (context) => VolumeData()),
+      ],
+      child: MyApp(),
     ),
   );
 }
